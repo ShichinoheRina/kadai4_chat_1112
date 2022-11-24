@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>Firebase_version9_RealtimeDB(G'sACADEMY初学者用サンプル)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<header class="top">
+
+</header>
+
+<body>
+    <div id="output"></div>
+    <div>
+        <button id="color">文字色</button>
+        <button id="bold">太字</button>
+        <button id="sakujyo">削除</button>
+        <div> 名前：<input type="text" id="uname"> </div>
+        <div>
+            <textarea  class="textnakami" id="text" cols="60" rows="10"></textarea>
+            <button id="send" class="sendbtn">送信</button>
+            
+        </div>
+    </div>
+
+    
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- JQuery -->
+
+    <!--** 以下Firebase **-->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+
+        // 貼り付ける場所
+        import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+        // 
+
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+  
+};
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // この辺りに書いていきます
+
+
+        const db = getDatabase(app);
+        const dbRef = ref(db, 'dev245');
+
+        var bold1 = "";
+        var bold2 = "";       
+        var color1= ""; 
+        const name =$('#uname').val()
+        $('#bold').on('click',function(){
+             bold1 = "<b>";
+             bold2 = "</b>"; 
+        });
+        $('#color').on('click',function(){
+             color1 = " style='color:red'";
+            //  color2 = "</b>"; 
+        });
+        $('#sakujyo').on('click',function(){
+         
+        });
+        // 送信処理を記述
+        $('#send').on('click', function () {
+
+            // id="uname" の場所を取得します🤗
+            const uname = "<p"+color1+">"+bold1+$('#uname').val()+bold2;
+            // id="text" の場所を取得します🤗
+            const text = bold1+$('#text').val()+bold2;
+  
+            bold1 ="";
+            bold2 ="";
+            color1="";
+            // 送信後テキストエリアの中身を消す
+            $('textarea').val(""); 
+            
+
+            // データの塊を作ります🤗
+            // msg という名前で塊を作ります
+            // 作成したデータの塊をfirebaseに送信をします⇨つまりこれが保存になります🤗
+            const msg = {
+                uname: uname,
+                text: text,
+            }
+            
+            // firebaseに送る準備をしていることになります🤗
+            const newPostRef = push(dbRef) //データを送信できる準備
+            set(newPostRef, msg); // firebaseの登録できる場所に保存するイメージです🤗
+            
+            // send送信イベント この下消さない
+        });
+
+
+
+        // 受信処理を記述
+        onChildAdded(dbRef, function (data) {
+            // 登録されたデータを取得します🤗
+            const msg = data.val();
+            console.log(msg, '取得したデータの塊')
+            const key = data.key;
+            console.log(key, 'データの塊にアクセス')
+
+
+            // es6のテンプレートリテラル
+            let h = `
+                <div class="msg">
+                    ${msg.uname}:${msg.text}</p>
+                </div>    
+            `;
+            // htmlに埋め込みましょう🤗
+            // append();というjqueryのおまじないを使います
+            $("#output").append(h);
+        })
+
+    // 入力中...の表示
+    $(function(){
+
+$('#text').keyup(function(){
+  var count = $(this).val().length;
+  if(count>0){
+    console.log("文字はいってます");
+    $('.sendbtn').css({'background-color': '#d4c8f8'});
+  }else{
+    $('.sendbtn').css({'background-color': 'white'});
+    setTimeout(function () {$(message).hide();}, 2000);
+  }}
+    )});
+
+const message = "さんがタイピング中です"
+setTimeout(function () {
+    $("#output").append(message);
+                            }, 1000);
+
+
+    </script>
+
+
+<style>
+    /* #output {
+        background: pink;
+        height: 300px;
+        overflow: scroll;
+    } */
+
+    /* .msg:nth-child(odd) {
+        width: 40%;
+        background: gainsboro;
+        margin-left: auto;
+        border-radius: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .msg:nth-child(even) {
+        background: bisque;
+        width: 40%;
+        padding: 10px;
+        border-radius: 10px;
+    } */
+</style>
+
+
+
+
+
+
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
