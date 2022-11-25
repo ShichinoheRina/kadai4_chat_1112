@@ -8,11 +8,15 @@
 </head>
 
 <header class="top">
-
 </header>
 
 <body>
-    <div id="output"></div>
+<div class="mawrap">
+    <main>
+    <div id="output">
+        <div id="message" class="message" style = 'display:none'><p id="nnnn"></p><p>さんがタイピング中です。</p></div>
+    </div>
+    
     <div>
         <button id="color">文字色</button>
         <button id="bold">太字</button>
@@ -21,11 +25,16 @@
         <div>
             <textarea  class="textnakami" id="text" cols="60" rows="10"></textarea>
             <button id="send" class="sendbtn">送信</button>
-            
         </div>
     </div>
+    </main>
 
-    
+
+    <aside>
+     <img  class="neko" src="img/neko3.jpeg" alt="猫">
+     <img class="inu" src="img/inu1.jpg" alt="犬">
+    </aside>   
+</div>
 
     <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -46,7 +55,7 @@
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
-  
+          
 };
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -56,17 +65,21 @@
 
         const db = getDatabase(app);
         const dbRef = ref(db, 'dev245');
-
+  
+        // 定義
         var bold1 = "";
         var bold2 = "";       
         var color1= ""; 
-        const name =$('#uname').val()
+       
+
         $('#bold').on('click',function(){
              bold1 = "<b>";
              bold2 = "</b>"; 
+             $('#bold').css('background-color','lightsalmon');
         });
         $('#color').on('click',function(){
              color1 = " style='color:red'";
+             $('#color').css('background-color','red');
             //  color2 = "</b>"; 
         });
         $('#sakujyo').on('click',function(){
@@ -83,9 +96,13 @@
             bold1 ="";
             bold2 ="";
             color1="";
-            // 送信後テキストエリアの中身を消す
+            // 送信後テキストエリアの中身、タイピング中を消す
             $('textarea').val(""); 
-            
+            $("#message").hide(); 
+
+            // ボタンの色無効化
+            $('#bold').css('background-color','');
+            $('#color').css('background-color','');
 
             // データの塊を作ります🤗
             // msg という名前で塊を作ります
@@ -116,7 +133,7 @@
             // es6のテンプレートリテラル
             let h = `
                 <div class="msg">
-                    ${msg.uname}:${msg.text}</p>
+                    ${msg.uname}:   ${msg.text}</p>
                 </div>    
             `;
             // htmlに埋め込みましょう🤗
@@ -124,25 +141,36 @@
             $("#output").append(h);
         })
 
+
     // 入力中...の表示
-    $(function(){
 
-$('#text').keyup(function(){
-  var count = $(this).val().length;
-  if(count>0){
-    console.log("文字はいってます");
-    $('.sendbtn').css({'background-color': '#d4c8f8'});
-  }else{
-    $('.sendbtn').css({'background-color': 'white'});
-    setTimeout(function () {$(message).hide();}, 2000);
-  }}
-    )});
+    // const message = "さんがタイピング中です"
+// setTimeout(function () {
+//     $("#output").append(message);
+//                             }, 1000);
 
-const message = "さんがタイピング中です"
-setTimeout(function () {
-    $("#output").append(message);
-                            }, 1000);
-aa
+
+    
+
+    $('#text').keyup(function(){
+    var count = $(this).val().length;
+    if(count>0){
+        $('.sendbtn').css({'background-color': '#d4c8f8'});
+        $('#message').show();
+    }if(count===0){
+        $('.sendbtn').css({'background-color': 'white'});
+        $("#message").hide();    
+    }});
+     
+
+
+    $('#uname').keyup(function(){
+        let name =$('#uname').val()
+        // console.log(name);
+        document.getElementById('nnnn').innerHTML = name ;
+    });
+
+
 
     </script>
 
